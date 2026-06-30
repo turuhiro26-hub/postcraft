@@ -1,0 +1,15 @@
+# build output (shipped as release assets, not committed)
+main.js
+*.js.map
+
+# dependencies
+node_modules/
+
+# local plugin data — NEVER commit (contains the user's API key)
+data.json
+
+# misc
+.DS_Store
+
+# 内部資料（設計書・レビュー結果）は公開しない
+2026-*.md

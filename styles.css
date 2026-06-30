@@ -1,0 +1,37 @@
+.postcraft-card {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.postcraft-text {
+  white-space: pre-wrap;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.postcraft-area {
+  width: 100%;
+  resize: vertical;
+  font-family: inherit;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.postcraft-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.postcraft-count {
+  color: var(--text-muted);
+  font-size: 0.85em;
+}
+
+.postcraft-count-over {
+  color: var(--text-error);
+  font-size: 0.85em;
+  font-weight: bold;
+}

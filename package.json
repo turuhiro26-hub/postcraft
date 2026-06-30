@@ -1,0 +1,20 @@
+{
+  "name": "postcraft",
+  "version": "1.0.0",
+  "description": "Turn notes into X and LinkedIn drafts with Claude, right inside Obsidian.",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production"
+  },
+  "keywords": ["obsidian", "plugin", "ai", "claude", "twitter", "social"],
+  "author": "turuhiro26",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20",
+    "builtin-modules": "^3.3.0",
+    "esbuild": "0.25.0",
+    "obsidian": "latest",
+    "typescript": "^5.4.0"
+  }
+}

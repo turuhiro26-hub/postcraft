@@ -64,6 +64,12 @@ interface DraftHistory {
   posts: string[];
 }
 
+// ---- Anthropic API レスポンス型 ----
+interface AnthropicResponse {
+  error?: { message?: string };
+  content?: Array<{ type: string; text?: string }>;
+}
+
 const MAX_HISTORY = 15;
 
 // ---- 設定 ----
@@ -141,7 +147,11 @@ export default class PostcraftPlugin extends Plugin {
   onunload() {}
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    this.settings = Object.assign(
+      {},
+      DEFAULT_SETTINGS,
+      (await this.loadData()) as Partial<PostcraftSettings>
+    );
   }
 
   async saveSettings() {
@@ -243,14 +253,13 @@ export default class PostcraftPlugin extends Plugin {
       throw: false,
     });
 
+    const json = response.json as AnthropicResponse;
     if (response.status !== 200) {
-      const msg = response.json?.error?.message ?? `HTTP ${response.status}`;
+      const msg = json?.error?.message ?? `HTTP ${response.status}`;
       throw new Error(msg);
     }
 
-    const textBlock = response.json?.content?.find(
-      (b: { type: string }) => b.type === "text"
-    );
+    const textBlock = json?.content?.find((b) => b.type === "text");
     if (!textBlock?.text) {
       throw new Error("Empty response from Claude.");
     }
@@ -418,7 +427,7 @@ class PostcraftSettingTab extends PluginSettingTab {
       });
 
     // ---- 声プロファイル ----
-    containerEl.createEl("h3", { text: "Voice" });
+    new Setting(containerEl).setName("Voice").setHeading();
 
     new Setting(containerEl)
       .setName("Tone preset")
@@ -443,7 +452,7 @@ class PostcraftSettingTab extends PluginSettingTab {
       )
       .addTextArea((ta) => {
         ta.inputEl.rows = 6;
-        ta.inputEl.style.width = "100%";
+        ta.inputEl.addClass("postcraft-voice-input");
         ta.setPlaceholder("Paste a few of your real posts here…")
           .setValue(this.plugin.settings.voiceSamples)
           .onChange(async (value) => {

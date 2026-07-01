@@ -1,7 +1,7 @@
 {
   "id": "postcraft",
   "name": "Postcraft",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minAppVersion": "1.5.0",
   "description": "Turn a selected note into ready-to-post X and LinkedIn drafts with one click. Matches your voice. Bring your own Claude API key.",
   "author": "turuhiro26",

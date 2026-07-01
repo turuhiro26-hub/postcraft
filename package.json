@@ -1,6 +1,6 @@
 {
   "name": "postcraft",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Turn notes into X and LinkedIn drafts with Claude, right inside Obsidian.",
   "main": "main.js",
   "scripts": {

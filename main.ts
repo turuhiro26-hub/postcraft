@@ -10,13 +10,13 @@ import {
   requestUrl,
 } from "obsidian";
 
-// ---- プラットフォーム定義（v1.0: X + LinkedIn） ----
+// ---- Platform definitions (v1.0: X + LinkedIn) ----
 interface PlatformDef {
   key: string;
   label: string;
-  limit: number; // 文字数の目安（カウンタ表示用）
-  defaultCount: number; // 生成案数
-  rules: string; // プロンプトに差すプラットフォーム固有ルール
+  limit: number; // character limit (used for the counter display)
+  defaultCount: number; // number of drafts to generate
+  rules: string; // platform-specific rules injected into the prompt
 }
 
 const PLATFORMS: Record<string, PlatformDef> = {
@@ -46,7 +46,7 @@ const PLATFORMS: Record<string, PlatformDef> = {
   },
 };
 
-// ---- トーンプリセット ----
+// ---- Tone presets ----
 const TONE_PRESETS: Record<string, string> = {
   default: "",
   no_hype:
@@ -56,15 +56,15 @@ const TONE_PRESETS: Record<string, string> = {
     "Tone: punchy and bold with a strong hook, but still honest and specific.",
 };
 
-// ---- 履歴 ----
+// ---- History ----
 interface DraftHistory {
   ts: number;
-  platform: string; // PLATFORMS のキー
+  platform: string; // key in PLATFORMS
   sourcePreview: string;
   posts: string[];
 }
 
-// ---- Anthropic API レスポンス型 ----
+// ---- Anthropic API response types ----
 interface AnthropicResponse {
   error?: { message?: string };
   content?: Array<{ type: string; text?: string }>;
@@ -72,12 +72,12 @@ interface AnthropicResponse {
 
 const MAX_HISTORY = 15;
 
-// ---- 設定 ----
+// ---- Settings ----
 interface PostcraftSettings {
   apiKey: string;
   model: string;
-  numXPosts: number; // X の生成案数（LinkedIn は 2 固定）
-  voiceSamples: string; // 過去投稿のfew-shotサンプル
+  numXPosts: number; // number of X drafts (LinkedIn is fixed at 2)
+  voiceSamples: string; // few-shot samples of the user's past posts
   tonePreset: string;
   history: DraftHistory[];
 }
@@ -122,7 +122,7 @@ export default class PostcraftPlugin extends Plugin {
       },
     });
 
-    // 右クリックメニュー（選択中のみ）
+    // Right-click menu (only when text is selected)
     this.registerEvent(
       this.app.workspace.on("editor-menu", (menu: Menu, editor: Editor) => {
         if (editor.getSelection().trim().length === 0) return;
@@ -175,7 +175,7 @@ export default class PostcraftPlugin extends Plugin {
       const posts = await this.generate(selection, platform);
       notice.hide();
 
-      // 履歴に保存
+      // Save to history
       this.settings.history.unshift({
         ts: Date.now(),
         platform: platform.key,
@@ -277,7 +277,7 @@ export default class PostcraftPlugin extends Plugin {
   }
 }
 
-// ---- 結果モーダル：編集可能なtextarea＋文字数カウンタ＋コピー ----
+// ---- Results modal: editable textarea + character counter + copy ----
 class ResultsModal extends Modal {
   posts: string[];
   platform: PlatformDef;
@@ -326,7 +326,7 @@ class ResultsModal extends Modal {
   }
 }
 
-// ---- 履歴モーダル：直近の生成を再表示 ----
+// ---- History modal: reopen recent generations ----
 class HistoryModal extends Modal {
   plugin: PostcraftPlugin;
 
@@ -359,7 +359,7 @@ class HistoryModal extends Modal {
   }
 }
 
-// ---- 設定タブ ----
+// ---- Settings tab ----
 class PostcraftSettingTab extends PluginSettingTab {
   plugin: PostcraftPlugin;
 
@@ -426,7 +426,7 @@ class PostcraftSettingTab extends PluginSettingTab {
           });
       });
 
-    // ---- 声プロファイル ----
+    // ---- Voice profile ----
     new Setting(containerEl).setName("Voice").setHeading();
 
     new Setting(containerEl)
@@ -461,7 +461,7 @@ class PostcraftSettingTab extends PluginSettingTab {
           });
       });
 
-    // ---- 履歴クリア ----
+    // ---- Clear history ----
     new Setting(containerEl)
       .setName("Clear draft history")
       .setDesc(`Stored locally, up to ${MAX_HISTORY} recent runs.`)
